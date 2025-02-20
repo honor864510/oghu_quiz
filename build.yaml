@@ -1,0 +1,29 @@
+targets:
+  $default:
+    builders:
+      auto_route_generator:auto_router_generator:
+        generate_for:
+          - lib/src/common/router/app_router.dart
+      auto_route_generator:auto_route_generator:
+        generate_for:
+          - lib/src/presentation/**_screen.dart
+      source_gen|combining_builder:
+        options:
+          build_extensions:
+            '^lib/{{}}.dart': 'lib/generated/{{}}.g.dart'
+      slang_build_runner:
+        options:
+          base_locale: ru
+          timestamp: false
+          fallback_strategy: base_locale
+          input_directory: assets/translations/
+          output_directory: lib/generated/
+      injectable_generator:injectable_builder:  
+        options:  
+          auto_register: true  
+          # auto registers any class with a name matches the given pattern
+          class_name_pattern:  
+            "Sdk$|Repository$"
+            # auto registers any class inside a file with a  
+            # name matches the given pattern  
+          file_name_pattern: "_sdk$|_repository$"  

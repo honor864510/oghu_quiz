@@ -1,0 +1,10 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    lines_longer_than_80_chars: ignore
+    library_private_types_in_public_api: false
+  exclude:
+    - '**.g.dart'
+    - '**.gr.dart'
+    - '**.config.dart'
