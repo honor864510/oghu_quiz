@@ -14,7 +14,7 @@ class QuizListWrap extends StatelessWidget {
       builder: (context) {
         return AnimatedOpacity(
           duration: const Duration(milliseconds: 400),
-          opacity: sl<QuizStore>().quizFetcherStore.isLoading ? 0.6 : 1,
+          opacity: sl<QuizStore>().quizFetcherStore.isLoading ? 0.2 : 1,
           child: IgnorePointer(
             ignoring: sl<QuizStore>().quizFetcherStore.isLoading,
             child: Wrap(
