@@ -18,4 +18,10 @@ abstract class _QuizCategoryStoreBase with Store {
 
   final QuizCategorySdk _categorySdk;
   late final DataFetcherStore<QuizCategoryDto> categoryFetcherStore;
+
+  @observable
+  QuizCategoryDto? selectedCategory;
+
+  @action
+  setSelectedCategory(QuizCategoryDto? value) => selectedCategory = value;
 }
