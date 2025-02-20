@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../generated/strings.g.dart';
 import '../quiz_category/horizontal_category_list.dart';
+import '../quiz/quiz_list_wrap.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
@@ -25,6 +26,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+      body: ListView(padding: EdgeInsets.all(AksInternal.constants.padding), children: [QuizListWrap()]),
     );
   }
 }

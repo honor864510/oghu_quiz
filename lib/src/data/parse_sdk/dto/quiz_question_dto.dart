@@ -26,7 +26,7 @@ class QuizQuestionDto extends ParseObject with ParseObjectEqualityMixin implemen
 
   QuizAnswerDto? get correctAnswer => get<QuizAnswerDto>(keyCorrectAnswer);
   QuizDto? get quiz => get<QuizDto>(keyQuiz);
-  ParseFile? get picture => get<ParseFile?>(keyPicture);
+  ParseFileBase? get picture => get<ParseFileBase?>(keyPicture);
 
   static const String className = 'QuizQuestion';
 

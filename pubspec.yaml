@@ -41,7 +41,6 @@ dependencies:
 
   # UI components
   cupertino_icons: ^1.0.8
-  skeletonizer: ^1.4.3
   
   # Internal Packages
   aks_internal:

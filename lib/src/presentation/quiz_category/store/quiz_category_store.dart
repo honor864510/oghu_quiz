@@ -4,6 +4,8 @@ import 'package:mobx/mobx.dart';
 import 'package:quiz/src/data/parse_sdk/dto/quiz_category_dto.dart';
 
 import '../../../data/parse_sdk/sdk/quiz_category_sdk.dart';
+import '../../../service_locator/sl.dart';
+import '../../quiz/store/quiz_store.dart';
 
 part '../../../../generated/src/presentation/quiz_category/store/quiz_category_store.g.dart';
 
@@ -14,6 +16,8 @@ abstract class _QuizCategoryStoreBase with Store {
   _QuizCategoryStoreBase({required QuizCategorySdk categorySdk}) : _categorySdk = categorySdk {
     categoryFetcherStore = DataFetcherStore(dataFetcher: _categorySdk.fetchCategories);
     categoryFetcherStore.fetch();
+
+    reaction((_) => selectedCategory, (category) => sl<QuizStore>().quizFetcherStore.fetch());
   }
 
   final QuizCategorySdk _categorySdk;

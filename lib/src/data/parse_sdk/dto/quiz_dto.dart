@@ -16,7 +16,7 @@ class QuizDto extends ParseObject with ParseObjectEqualityMixin implements Parse
   QuizType get type => QuizType.values.elementAtOrNull(get<int>(keyType) ?? 0) ?? QuizType.yesNo;
 
   QuizCategoryDto? get category => get<QuizCategoryDto>(keyCategory);
-  ParseFile? get picture => get<ParseFile?>(keyPicture);
+  ParseFileBase? get picture => get<ParseFileBase?>(keyPicture);
   ParseRelation? get answers => get<ParseRelation>(keyAnswers);
 
   static const String className = 'Quiz';

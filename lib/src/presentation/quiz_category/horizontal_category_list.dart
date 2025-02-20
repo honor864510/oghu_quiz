@@ -1,7 +1,6 @@
 import 'package:aks_internal/aks_internal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../generated/strings.g.dart';
 import '../../service_locator/sl.dart';
@@ -17,15 +16,12 @@ class HorizontalCategoryList extends StatelessWidget {
     return Observer(
       builder: (_) {
         return Center(
-          child: Skeletonizer(
-            enabled: categoryFetcherStore.isLoading,
-            child: ListView.separated(
-              itemCount: categoryFetcherStore.items.length + 1,
-              separatorBuilder: (context, index) => Space.h10,
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemBuilder: (context, index) => _CategoryItem(index),
-            ),
+          child: ListView.separated(
+            itemCount: categoryFetcherStore.items.length + 1,
+            separatorBuilder: (context, index) => Space.h10,
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemBuilder: (context, index) => _CategoryItem(index),
           ),
         );
       },
