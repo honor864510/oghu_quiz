@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../../generated/strings.g.dart';
+import '../../common/router/app_router.gr.dart';
 import '../../data/parse_sdk/dto/quiz_dto.dart';
 
 @RoutePage()
@@ -33,7 +34,7 @@ class QuizInfoScreen extends StatelessWidget {
               style: FilledButton.styleFrom(
                 padding: EdgeInsets.symmetric(horizontal: context.width * 0.05, vertical: context.height * 0.05),
               ),
-              onPressed: () {},
+              onPressed: () => context.pushRoute(QuizRoute(quiz: quiz)),
               child: Text(
                 context.t.start,
                 style: context.textTheme.titleLarge?.copyWith(

@@ -2,6 +2,7 @@ import 'package:aks_internal/aks_internal.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 import '../../../common/utils/helper_functions.dart';
+import 'quiz_dto.dart';
 
 class QuizAnswerDto extends ParseObject with ParseObjectEqualityMixin implements ParseCloneable {
   QuizAnswerDto() : super(className);
@@ -14,11 +15,14 @@ class QuizAnswerDto extends ParseObject with ParseObjectEqualityMixin implements
 
   bool get isYes => get<bool?>(keyIsYes) ?? false;
 
+  QuizDto? get quiz => get<QuizDto>(keyQuiz);
+
   static const String className = 'QuizAnswer';
 
   static const String keyNameRu = 'titleRu';
   static const String keyNameTk = 'titleTk';
   static const String keyNameEn = 'titleEn';
+  static const String keyQuiz = 'quiz';
 
   static const String keyIsYes = 'isYes';
 

@@ -10,6 +10,7 @@ final class QuizSdk extends ParseSdkBase<QuizDto> {
     final results = await fetchList(
       parseQueryBuilder: ParseQueryBuilder(
         equalsFilters: [if (category != null) EqualsFilter(column: QuizDto.keyCategory, value: category)],
+        keysToInclude: [QuizDto.keyCategory],
       ),
     );
 
