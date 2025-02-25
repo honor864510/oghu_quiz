@@ -55,7 +55,7 @@ class Application extends StatelessWidget {
                 data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
                 child: FractionallySizedBox(
                   widthFactor: context.width < 1000 ? 1.0 : 1000 / context.width,
-                child: child ?? Space.empty,
+                  child: child ?? Space.empty,
                 ),
               ),
             );

@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import '../../data/parse_sdk/dto/quiz_category_dto.dart';
 import '../../data/parse_sdk/dto/quiz_dto.dart';
 import '../../data/parse_sdk/sdk/quiz_answer_sdk.dart';
@@ -25,7 +27,7 @@ class QuizRepository {
               final thisAnswers = answers.where((answer) => answer.quiz?.compareId(quiz) ?? false);
 
               if (thisAnswers.isNotEmpty) {
-                quiz.answers = thisAnswers.toList();
+                quiz.answers = thisAnswers.sorted((a, b) => a.isYes ? 0 : 1).toList();
               }
 
               return quiz;
