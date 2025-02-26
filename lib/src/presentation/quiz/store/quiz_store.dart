@@ -1,7 +1,9 @@
 import 'package:aks_internal/aks_internal.dart';
+import 'package:collection/collection.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../data/parse_sdk/dto/quiz_answer_dto.dart';
 import '../../../data/parse_sdk/dto/quiz_dto.dart';
 import '../../../data/parse_sdk/dto/quiz_question_dto.dart';
 import '../../../domain/repository/quiz_repository.dart';
@@ -51,5 +53,30 @@ abstract class _QuizStoreBase with Store {
   setCurrentQuestion(QuizQuestionDto? value) => currentQuestion = value;
 
   @action
-  nextQuestion(QuizQuestionDto? value) => currentQuestion = value;
+  nextQuestion() {
+    if (currentQuestion == null) return;
+
+    final idx = currentQuiz?.questions.indexOf(currentQuestion!) ?? -1;
+
+    if (idx != -1) {
+      currentQuestion = currentQuiz?.questions[idx];
+    }
+  }
+
+  @observable
+  List<QuizAnswerDto> correctAnswers = <QuizAnswerDto>[];
+
+  @observable
+  List<QuizAnswerDto> incorrectAnswers = <QuizAnswerDto>[];
+
+  @action
+  setAnswer(QuizAnswerDto? answer) {
+    if (answer == null) return;
+
+    if (currentQuestion?.correctAnswer?.compareId(answer) ?? false) {
+      correctAnswers.add(answer);
+    } else {
+      incorrectAnswers.add(answer);
+    }
+  }
 }
