@@ -5,5 +5,7 @@
     "no": "Нет",
     "all": "Все",
     "start": "Начать",
-    "interactivePractice": "Интерактивная практика"
+    "interactivePractice": "Интерактивная практика",
+    "correctAnswer": "Ответ правильный!",
+    "incorrectAnswer": "Ответ не правильный! Попробуйте еще."
 }

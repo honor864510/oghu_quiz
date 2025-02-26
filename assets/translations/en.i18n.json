@@ -5,5 +5,7 @@
     "no": "No",
     "all": "All",
     "start": "Start",
-    "interactivePractice": "Interactive Practice"
+    "interactivePractice": "Interactive Practice",
+    "correctAnswer": "Correct answer!",
+    "incorrectAnswer": "Wrong answer! Try again."
 }
