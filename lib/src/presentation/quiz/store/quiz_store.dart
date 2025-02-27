@@ -3,6 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
+import '../../../common/router/app_router.dart';
+import '../../../common/router/app_router.gr.dart';
 import '../../../data/parse_sdk/dto/quiz_answer_dto.dart';
 import '../../../data/parse_sdk/dto/quiz_dto.dart';
 import '../../../data/parse_sdk/dto/quiz_question_dto.dart';
@@ -56,27 +58,42 @@ abstract class _QuizStoreBase with Store {
   nextQuestion() {
     if (currentQuestion == null) return;
 
-    final idx = currentQuiz?.questions.indexOf(currentQuestion!) ?? -1;
+    final questions = currentQuiz?.questions ?? [];
+    final currentIndex = questions.indexOf(currentQuestion!);
 
-    if (idx != -1) {
-      currentQuestion = currentQuiz?.questions[idx];
+    if (currentIndex == -1) {
+      return;
     }
+
+    if (currentIndex >= questions.length - 1) {
+      sl<AppRouter>().replace(QuizResultRoute());
+      return;
+    }
+
+    currentQuestion = questions[currentIndex + 1];
   }
 
   @observable
-  List<QuizAnswerDto> correctAnswers = <QuizAnswerDto>[];
+  List<QuizQuestionDto> correctAnswers = <QuizQuestionDto>[];
 
   @observable
-  List<QuizAnswerDto> incorrectAnswers = <QuizAnswerDto>[];
+  List<QuizQuestionDto> incorrectAnswers = <QuizQuestionDto>[];
 
   @action
   setAnswer(QuizAnswerDto? answer) {
-    if (answer == null) return;
+    if (answer == null || currentQuestion == null) return;
 
     if (currentQuestion?.correctAnswer?.compareId(answer) ?? false) {
-      correctAnswers.add(answer);
+      correctAnswers.add(currentQuestion!);
     } else {
-      incorrectAnswers.add(answer);
+      incorrectAnswers.add(currentQuestion!);
     }
+  }
+
+  dispose() {
+    correctAnswers.clear();
+    incorrectAnswers.clear();
+    currentQuestion = null;
+    currentQuiz = null;
   }
 }

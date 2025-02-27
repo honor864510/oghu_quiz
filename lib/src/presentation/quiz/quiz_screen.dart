@@ -39,11 +39,12 @@ class _QuizType1 extends StatelessWidget {
     return Observer(
       builder: (context) {
         final quiz = sl<QuizStore>().currentQuiz;
+        final currentQuestion = sl<QuizStore>().currentQuestion;
 
         return Column(
           spacing: AksInternal.constants.padding,
           children: [
-            _QuizType1Header(quiz: quiz),
+            _QuizType1Header(quiz: quiz, currentQuestion: currentQuestion),
             Text(
               'Drop text here',
               style: context.textTheme.displayMedium?.copyWith(
@@ -51,7 +52,6 @@ class _QuizType1 extends StatelessWidget {
                 color: context.colorScheme.primary,
               ),
             ),
-
             Wrap(
               spacing: AksInternal.constants.padding,
               runSpacing: AksInternal.constants.padding,
@@ -90,27 +90,7 @@ class _QuizType1 extends StatelessWidget {
                             runSpacing: AksInternal.constants.padding,
                             children: [
                               for (final question in quiz?.questions ?? <QuizQuestionDto>[])
-                                if (question.correctAnswer?.compareId(answer) ?? false)
-                                  DragTarget<QuizQuestionDto>(
-                                    onWillAcceptWithDetails: (details) {
-                                      return true;
-                                    },
-                                    onAcceptWithDetails: (details) {
-                                      sl<QuizStore>().setAnswer(answer);
-                                      sl<QuizStore>().nextQuestion();
-                                    },
-                                    builder: (context, candidateData, rejectedData) {
-                                      return Container(
-                                        height: context.height * 0.16,
-                                        width: context.height * 0.16,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(color: context.colorScheme.primary),
-                                        ),
-                                        child: AksCachedImage(imageUrl: candidateData.firstOrNull?.picture?.url),
-                                      );
-                                    },
-                                  ),
+                                if (question.correctAnswer?.compareId(answer) ?? false) _DragTarget(answer: answer),
                             ],
                           ),
 
@@ -128,10 +108,50 @@ class _QuizType1 extends StatelessWidget {
   }
 }
 
+class _DragTarget extends StatefulWidget {
+  const _DragTarget({required this.answer});
+
+  final QuizAnswerDto answer;
+
+  @override
+  State<_DragTarget> createState() => _DragTargetState();
+}
+
+class _DragTargetState extends State<_DragTarget> {
+  String? pictureUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return DragTarget<QuizQuestionDto>(
+      onWillAcceptWithDetails: (details) {
+        // TODO Show error message
+        return pictureUrl == null;
+      },
+      onAcceptWithDetails: (details) {
+        setState(() {
+          pictureUrl = details.data.picture?.url;
+        });
+
+        sl<QuizStore>().setAnswer(widget.answer);
+        sl<QuizStore>().nextQuestion();
+      },
+      builder: (context, candidateData, rejectedData) {
+        return Container(
+          height: context.height * 0.12,
+          width: context.height * 0.12,
+          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: context.colorScheme.primary)),
+          child: AksCachedImage(imageUrl: pictureUrl),
+        );
+      },
+    );
+  }
+}
+
 class _QuizType1Header extends StatelessWidget {
-  const _QuizType1Header({required this.quiz});
+  const _QuizType1Header({required this.quiz, required this.currentQuestion});
 
   final QuizDto? quiz;
+  final QuizQuestionDto? currentQuestion;
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +160,10 @@ class _QuizType1Header extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Expanded(
+          SizedBox(
+            width:
+                (context.width * 0.5 - context.height * 0.12 / 2 - AksInternal.constants.padding * 2) *
+                (context.width < 1000 ? 1.0 : 1000 / context.width),
             child: Text(
               quiz?.category?.title ?? '',
               style: context.textTheme.displayMedium?.copyWith(
@@ -149,25 +172,40 @@ class _QuizType1Header extends StatelessWidget {
               ),
             ),
           ),
-          Draggable<QuizQuestionDto>(
-            data: sl<QuizStore>().currentQuestion,
-            feedback: AksCachedImage(
-              imageUrl: sl<QuizStore>().currentQuestion?.picture?.url,
-              height: context.height * 0.16,
-              width: context.height * 0.16,
-            ),
-            childWhenDragging: Container(
-              decoration: BoxDecoration(border: Border.all(color: context.colorScheme.primary), shape: BoxShape.circle),
-              height: context.height * 0.16,
-              width: context.height * 0.16,
-            ),
-            child: AksCachedImage(
-              imageUrl: sl<QuizStore>().currentQuestion?.picture?.url,
-              height: context.height * 0.16,
-              width: context.height * 0.16,
+          Expanded(
+            child: Draggable<QuizQuestionDto>(
+              data: currentQuestion,
+              childWhenDragging: Space.empty,
+              feedback: _QuestionTitleHeader(currentQuestion: currentQuestion),
+              child: _QuestionTitleHeader(currentQuestion: currentQuestion),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuestionTitleHeader extends StatelessWidget {
+  const _QuestionTitleHeader({required this.currentQuestion});
+
+  final QuizQuestionDto? currentQuestion;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: (context.width * 0.5) * (context.width < 1000 ? 1.0 : 1000 / context.width),
+      ),
+      child: Row(
+        children: [
+          AksCachedImage(
+            imageUrl: currentQuestion?.picture?.url,
+            height: context.height * 0.16,
+            width: context.height * 0.16,
+          ),
           Space.h20,
+
           Expanded(
             child: Observer(
               builder: (_) {
@@ -175,19 +213,20 @@ class _QuizType1Header extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    Space.v15,
                     Text(
-                      sl<QuizStore>().currentQuestion?.title ?? '',
+                      currentQuestion?.title ?? '',
                       style: context.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: context.colorScheme.primary,
                       ),
                     ),
                     Text(
-                      sl<QuizStore>().currentQuestion?.description ?? '',
+                      currentQuestion?.description ?? '',
                       style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      sl<QuizStore>().currentQuestion?.text ?? '',
+                      currentQuestion?.text ?? '',
                       style: context.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: context.colorScheme.primary,
