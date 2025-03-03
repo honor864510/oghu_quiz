@@ -2,6 +2,7 @@ import 'package:aks_internal/aks_internal.dart';
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
 import '../../data/parse_sdk/dto/quiz_answer_dto.dart';
 import '../../data/parse_sdk/dto/quiz_dto.dart';
@@ -29,7 +30,11 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: ListView(children: [if (widget.quiz.type == QuizType.yesNo) _QuizType1()]));
+    return Scaffold(
+      body: ListView(
+        children: [if (widget.quiz.type == QuizType.yesNo) _QuizType1()],
+      ),
+    );
   }
 }
 
@@ -52,6 +57,57 @@ class _QuizType1 extends StatelessWidget {
                 color: context.colorScheme.primary,
               ),
             ),
+            SizedBox(
+              height: context.height * 0.1,
+              child: Observer(
+                builder: (_) {
+                  return SizedBox(
+                    height: context.height * 0.1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Spacer(),
+                        Space.h20,
+                        Space.h20,
+                        FilledButton(
+                          onPressed:
+                              sl<QuizStore>().queuedAnswer == null
+                                  ? null
+                                  : () {},
+                          style: FilledButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: AksInternal.constants.padding * 3,
+                              vertical: AksInternal.constants.padding * 1.4,
+                            ),
+                          ),
+                          child: Text('Confirm'),
+                        ),
+                        Space.h10,
+                        AnimatedOpacity(
+                          duration: AksInternal.constants.animationDuration,
+                          opacity: sl<QuizStore>().queuedAnswer != null ? 1 : 0,
+                          child: IconButton.filled(
+                            style: IconButton.styleFrom(
+                              shape: CircleBorder(),
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.zero,
+                              backgroundColor: context.colorScheme.error,
+                            ),
+                            onPressed:
+                                sl<QuizStore>().queuedAnswer == null
+                                    ? null
+                                    : () =>
+                                        sl<QuizStore>().setQueuedAnswer(null),
+                            icon: Center(child: Icon(Icons.cancel_outlined)),
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
             Wrap(
               spacing: AksInternal.constants.padding,
               runSpacing: AksInternal.constants.padding,
@@ -68,33 +124,29 @@ class _QuizType1 extends StatelessWidget {
                       margin: EdgeInsets.zero,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
-                        spacing: AksInternal.constants.padding,
                         children: [
                           Container(
                             width: double.infinity,
                             height: context.height * 0.12,
-                            padding: EdgeInsets.only(top: context.height * 0.04),
+                            padding: EdgeInsets.only(
+                              top: context.height * 0.04,
+                            ),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(AksInternal.constants.borderRadius),
+                              borderRadius: BorderRadius.circular(
+                                AksInternal.constants.borderRadius,
+                              ),
                               color: context.colorScheme.primary,
                             ),
                             child: Center(
                               child: Text(
                                 answer.title,
-                                style: context.textTheme.titleLarge?.copyWith(color: context.colorScheme.onPrimary),
+                                style: context.textTheme.titleLarge?.copyWith(
+                                  color: context.colorScheme.onPrimary,
+                                ),
                               ),
                             ),
                           ),
-                          Wrap(
-                            spacing: AksInternal.constants.padding,
-                            runSpacing: AksInternal.constants.padding,
-                            children: [
-                              for (final question in quiz?.questions ?? <QuizQuestionDto>[])
-                                if (question.correctAnswer?.compareId(answer) ?? false) _DragTarget(answer: answer),
-                            ],
-                          ),
-
-                          Space.empty,
+                          _DragTarget(quiz: quiz, answer: answer),
                         ],
                       ),
                     ),
@@ -109,8 +161,9 @@ class _QuizType1 extends StatelessWidget {
 }
 
 class _DragTarget extends StatefulWidget {
-  const _DragTarget({required this.answer});
+  const _DragTarget({required this.quiz, required this.answer});
 
+  final QuizDto? quiz;
   final QuizAnswerDto answer;
 
   @override
@@ -118,31 +171,75 @@ class _DragTarget extends StatefulWidget {
 }
 
 class _DragTargetState extends State<_DragTarget> {
-  String? pictureUrl;
+  bool isTargeting = false;
+
+  @override
+  void initState() {
+    reaction((_) => sl<QuizStore>().queuedAnswer, (queuedAnswer) {
+      if (queuedAnswer == null) {
+        isTargeting = false;
+      }
+
+      setState(() {});
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return DragTarget<QuizQuestionDto>(
-      onWillAcceptWithDetails: (details) {
-        // TODO Show error message
-        return pictureUrl == null;
+      onLeave: (data) {
+        setState(() {
+          isTargeting = false;
+        });
       },
       onAcceptWithDetails: (details) {
+        sl<QuizStore>().setQueuedAnswer(details.data);
+      },
+      onWillAcceptWithDetails: (details) {
         setState(() {
-          pictureUrl = details.data.picture?.url;
+          isTargeting = true;
         });
 
-        sl<QuizStore>().setAnswer(widget.answer);
-        sl<QuizStore>().nextQuestion();
+        return true;
       },
-      builder: (context, candidateData, rejectedData) {
-        return Container(
-          height: context.height * 0.12,
-          width: context.height * 0.12,
-          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: context.colorScheme.primary)),
-          child: AksCachedImage(imageUrl: pictureUrl),
-        );
-      },
+      builder:
+          (context, candidateData, rejectedData) => AnimatedContainer(
+            duration: AksInternal.constants.animationDuration,
+            padding: EdgeInsets.only(top: AksInternal.constants.padding),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                AksInternal.constants.borderRadius,
+              ),
+              color: isTargeting ? context.colorScheme.secondary : null,
+            ),
+            child: Wrap(
+              spacing: AksInternal.constants.padding,
+              runSpacing: AksInternal.constants.padding,
+              children: [
+                for (final question
+                    in widget.quiz?.questions ?? <QuizQuestionDto>[])
+                  if (question.correctAnswer?.compareId(widget.answer) ?? false)
+                    Observer(
+                      builder: (_) {
+                        return Container(
+                          height: context.height * 0.12,
+                          width: context.height * 0.12,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: context.colorScheme.primary,
+                            ),
+                          ),
+                          child: AksCachedImage(
+                            imageUrl: question.picture?.url,
+                          ),
+                        );
+                      },
+                    ),
+              ],
+            ),
+          ),
     );
   }
 }
@@ -162,7 +259,9 @@ class _QuizType1Header extends StatelessWidget {
         children: [
           SizedBox(
             width:
-                (context.width * 0.5 - context.height * 0.12 / 2 - AksInternal.constants.padding * 2) *
+                (context.width * 0.5 -
+                    context.height * 0.12 / 2 -
+                    AksInternal.constants.padding * 2) *
                 (context.width < 1000 ? 1.0 : 1000 / context.width),
             child: Text(
               quiz?.category?.title ?? '',
@@ -173,11 +272,19 @@ class _QuizType1Header extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Draggable<QuizQuestionDto>(
-              data: currentQuestion,
-              childWhenDragging: Space.empty,
-              feedback: _QuestionTitleHeader(currentQuestion: currentQuestion),
-              child: _QuestionTitleHeader(currentQuestion: currentQuestion),
+            child: Observer(
+              builder: (_) {
+                return Draggable<QuizQuestionDto>(
+                  data: currentQuestion,
+                  childWhenDragging: Space.empty,
+                  maxSimultaneousDrags:
+                      sl<QuizStore>().queuedAnswer == null ? 1 : 0,
+                  feedback: _QuestionTitleHeader(
+                    currentQuestion: currentQuestion,
+                  ),
+                  child: _QuestionTitleHeader(currentQuestion: currentQuestion),
+                );
+              },
             ),
           ),
         ],
@@ -195,7 +302,9 @@ class _QuestionTitleHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(
-        maxWidth: (context.width * 0.5) * (context.width < 1000 ? 1.0 : 1000 / context.width),
+        maxWidth:
+            (context.width * 0.5) *
+            (context.width < 1000 ? 1.0 : 1000 / context.width),
       ),
       child: Row(
         children: [
@@ -223,7 +332,9 @@ class _QuestionTitleHeader extends StatelessWidget {
                     ),
                     Text(
                       currentQuestion?.description ?? '',
-                      style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      style: context.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       currentQuestion?.text ?? '',

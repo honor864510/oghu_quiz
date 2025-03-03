@@ -18,7 +18,8 @@ part '../../../../generated/src/presentation/quiz/store/quiz_store.g.dart';
 class QuizStore = _QuizStoreBase with _$QuizStore;
 
 abstract class _QuizStoreBase with Store {
-  _QuizStoreBase({required QuizRepository quizRepository}) : _quizRepository = quizRepository {
+  _QuizStoreBase({required QuizRepository quizRepository})
+    : _quizRepository = quizRepository {
     quizFetcherStore = DataFetcherStore(
       dataFetcher: () {
         final category = sl<QuizCategoryStore>().selectedCategory;
@@ -72,6 +73,17 @@ abstract class _QuizStoreBase with Store {
 
     currentQuestion = questions[currentIndex + 1];
   }
+
+  @observable
+  ObservableMap<QuizAnswerDto, QuizQuestionDto> answeredMap = ObservableMap.of(
+    {},
+  );
+
+  @observable
+  QuizQuestionDto? queuedAnswer;
+
+  @action
+  setQueuedAnswer(QuizQuestionDto? value) => queuedAnswer = value;
 
   @observable
   List<QuizQuestionDto> correctAnswers = <QuizQuestionDto>[];
