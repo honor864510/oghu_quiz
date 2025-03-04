@@ -80,10 +80,10 @@ abstract class _QuizStoreBase with Store {
   );
 
   @observable
-  QuizQuestionDto? queuedAnswer;
+  QuizAnswerDto? selectedAnswer;
 
   @action
-  setQueuedAnswer(QuizQuestionDto? value) => queuedAnswer = value;
+  void setSelectedAnswer(QuizAnswerDto? value) => selectedAnswer = value;
 
   @observable
   List<QuizQuestionDto> correctAnswers = <QuizQuestionDto>[];

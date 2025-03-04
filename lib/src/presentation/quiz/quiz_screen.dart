@@ -38,7 +38,56 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 }
 
-class _QuizType1 extends StatelessWidget {
+class _QuizType1 extends StatefulWidget {
+  @override
+  State<_QuizType1> createState() => _QuizType1State();
+}
+
+class _QuizType1State extends State<_QuizType1> {
+  _showNextQuestion() async {
+    await Navigator.of(context).maybePop();
+    sl<QuizStore>().setSelectedAnswer(null);
+    sl<QuizStore>().nextQuestion();
+  }
+
+  _submitAnswer() async {
+    final store = sl<QuizStore>();
+    // Check correctness and update store
+    store.setAnswer(store.selectedAnswer);
+
+    final isCorrect =
+        store.currentQuestion?.correctAnswer?.compareId(store.selectedAnswer) ??
+        false;
+
+    // TODO Show correct/incorrect dialog?
+    await showDialog(
+      context: context,
+      barrierColor: Colors.transparent,
+      barrierDismissible: false,
+      builder:
+          (context) => Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: AksInternal.constants.padding,
+              children: [
+                Space.empty,
+                Text(isCorrect ? 'Correct!' : 'Wrong!'),
+                Text(
+                  isCorrect
+                      ? store.currentQuestion?.correctDescription ?? ''
+                      : store.currentQuestion?.wrongDescription ?? '',
+                ),
+                ElevatedButton(
+                  onPressed: _showNextQuestion,
+                  child: const Text('Next'),
+                ),
+                Space.empty,
+              ],
+            ),
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -71,9 +120,9 @@ class _QuizType1 extends StatelessWidget {
                         Space.h20,
                         FilledButton(
                           onPressed:
-                              sl<QuizStore>().queuedAnswer == null
+                              sl<QuizStore>().selectedAnswer == null
                                   ? null
-                                  : () {},
+                                  : _submitAnswer,
                           style: FilledButton.styleFrom(
                             padding: EdgeInsets.symmetric(
                               horizontal: AksInternal.constants.padding * 3,
@@ -85,7 +134,8 @@ class _QuizType1 extends StatelessWidget {
                         Space.h10,
                         AnimatedOpacity(
                           duration: AksInternal.constants.animationDuration,
-                          opacity: sl<QuizStore>().queuedAnswer != null ? 1 : 0,
+                          opacity:
+                              sl<QuizStore>().selectedAnswer != null ? 1 : 0,
                           child: IconButton.filled(
                             style: IconButton.styleFrom(
                               shape: CircleBorder(),
@@ -94,10 +144,10 @@ class _QuizType1 extends StatelessWidget {
                               backgroundColor: context.colorScheme.error,
                             ),
                             onPressed:
-                                sl<QuizStore>().queuedAnswer == null
+                                sl<QuizStore>().selectedAnswer == null
                                     ? null
                                     : () =>
-                                        sl<QuizStore>().setQueuedAnswer(null),
+                                        sl<QuizStore>().setSelectedAnswer(null),
                             icon: Center(child: Icon(Icons.cancel_outlined)),
                           ),
                         ),
@@ -175,8 +225,8 @@ class _DragTargetState extends State<_DragTarget> {
 
   @override
   void initState() {
-    reaction((_) => sl<QuizStore>().queuedAnswer, (queuedAnswer) {
-      if (queuedAnswer == null) {
+    reaction((_) => sl<QuizStore>().selectedAnswer, (selectedAnswer) {
+      if (selectedAnswer == null) {
         isTargeting = false;
       }
 
@@ -194,7 +244,7 @@ class _DragTargetState extends State<_DragTarget> {
         });
       },
       onAcceptWithDetails: (details) {
-        sl<QuizStore>().setQueuedAnswer(details.data);
+        sl<QuizStore>().setSelectedAnswer(widget.answer);
       },
       onWillAcceptWithDetails: (details) {
         setState(() {
@@ -278,7 +328,7 @@ class _QuizType1Header extends StatelessWidget {
                   data: currentQuestion,
                   childWhenDragging: Space.empty,
                   maxSimultaneousDrags:
-                      sl<QuizStore>().queuedAnswer == null ? 1 : 0,
+                      sl<QuizStore>().selectedAnswer == null ? 1 : 0,
                   feedback: _QuestionTitleHeader(
                     currentQuestion: currentQuestion,
                   ),
