@@ -229,7 +229,6 @@ class _DragTargetState extends State<_DragTarget> {
       if (selectedAnswer == null) {
         isTargeting = false;
       }
-
       setState(() {});
     });
     super.initState();
@@ -237,6 +236,7 @@ class _DragTargetState extends State<_DragTarget> {
 
   @override
   Widget build(BuildContext context) {
+    final store = sl<QuizStore>();
     return DragTarget<QuizQuestionDto>(
       onLeave: (data) {
         setState(() {
@@ -244,52 +244,64 @@ class _DragTargetState extends State<_DragTarget> {
         });
       },
       onAcceptWithDetails: (details) {
-        sl<QuizStore>().setSelectedAnswer(widget.answer);
+        store.setSelectedAnswer(widget.answer);
       },
       onWillAcceptWithDetails: (details) {
         setState(() {
           isTargeting = true;
         });
-
         return true;
       },
-      builder:
-          (context, candidateData, rejectedData) => AnimatedContainer(
-            duration: AksInternal.constants.animationDuration,
-            padding: EdgeInsets.only(top: AksInternal.constants.padding),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                AksInternal.constants.borderRadius,
-              ),
-              color: isTargeting ? context.colorScheme.secondary : null,
+      builder: (context, candidateData, rejectedData) {
+        return AnimatedContainer(
+          duration: AksInternal.constants.animationDuration,
+          padding: EdgeInsets.only(top: AksInternal.constants.padding),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(
+              AksInternal.constants.borderRadius,
             ),
-            child: Wrap(
-              spacing: AksInternal.constants.padding,
-              runSpacing: AksInternal.constants.padding,
-              children: [
-                for (final question
-                    in widget.quiz?.questions ?? <QuizQuestionDto>[])
-                  if (question.correctAnswer?.compareId(widget.answer) ?? false)
-                    Observer(
-                      builder: (_) {
-                        return Container(
-                          height: context.height * 0.12,
-                          width: context.height * 0.12,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: context.colorScheme.primary,
-                            ),
-                          ),
-                          child: AksCachedImage(
-                            imageUrl: question.picture?.url,
-                          ),
-                        );
-                      },
-                    ),
-              ],
-            ),
+            color: isTargeting ? context.colorScheme.secondary : null,
           ),
+          child: Wrap(
+            spacing: AksInternal.constants.padding,
+            runSpacing: AksInternal.constants.padding,
+            children: [
+              for (final question
+                  in widget.quiz?.questions ?? <QuizQuestionDto>[])
+                if (question.correctAnswer?.compareId(widget.answer) ?? false)
+                  Observer(
+                    builder: (_) {
+                      final isAnswered =
+                          store.correctAnswers.contains(question) ||
+                          store.incorrectAnswers.contains(question);
+
+                      return Container(
+                        height: context.height * 0.12,
+                        width: context.height * 0.12,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: context.colorScheme.primary,
+                            style:
+                                isAnswered
+                                    ? BorderStyle.solid
+                                    : BorderStyle.solid,
+                          ),
+                        ),
+                        child:
+                            isAnswered
+                                ? AksCachedImage(
+                                  imageUrl: question.picture?.url,
+                                  fit: BoxFit.cover,
+                                )
+                                : null,
+                      );
+                    },
+                  ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
