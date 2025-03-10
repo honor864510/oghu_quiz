@@ -11,7 +11,17 @@ class _QuizType1 extends StatelessWidget {
         return Column(
           spacing: AksInternal.constants.padding,
           children: [
-            _QuizType1Header(quiz: quiz, currentQuestion: currentQuestion),
+            Observer(
+              builder: (context) {
+                final isTargeted = sl<QuizStore>().targetingQuestion != null;
+
+                return _QuizType1Header(
+                  quiz: quiz,
+                  currentQuestion: currentQuestion,
+                  isQuestionVisible: !isTargeted,
+                );
+              },
+            ),
             // TODO Confirm button if it's placed
             // TOOD Show Space.empty if it's not placed yet
             Observer(
@@ -102,7 +112,7 @@ class _DragTarget extends StatelessWidget {
   Widget build(BuildContext context) {
     return DragTarget<QuizQuestionDto>(
       onAcceptWithDetails: (details) {
-        sl<QuizStore>().setTargetingQuestion(details.data);
+        sl<QuizStore>().setTargetingQuestion(question);
       },
       onWillAcceptWithDetails: (details) {
         return sl<QuizStore>().answeredQuestions[question] == null;
@@ -110,15 +120,28 @@ class _DragTarget extends StatelessWidget {
       builder: (context, candidateData, rejectedData) {
         return Observer(
           builder: (_) {
-            final isAnswered =
-                sl<QuizStore>().answeredQuestions[question] != null;
+            final answeredQuestions = sl<QuizStore>().answeredQuestions;
+            final isAnswered = answeredQuestions[question] != null;
+            final isTargeting =
+                sl<QuizStore>().targetingQuestion?.compareId(question) ?? false;
 
-            if (sl<QuizStore>().targetingQuestion?.compareId(question) ??
-                false || isAnswered) {
-              return AksCachedImage(
-                imageUrl: question.picture?.url,
-                height: context.height * 0.12,
-                width: context.height * 0.12,
+            if (isAnswered || isTargeting) {
+              return Draggable<QuizQuestionDto>(
+                data: isTargeting ? sl<QuizStore>().currentQuestion : null,
+                feedback: _QuestionTitleHeader(
+                  currentQuestion: sl<QuizStore>().currentQuestion,
+                ),
+                childWhenDragging: _ImagePlaceholder(),
+                child: AksCachedImage(
+                  imageUrl:
+                      isAnswered
+                          ? question.picture?.url
+                          : isTargeting
+                          ? sl<QuizStore>().currentQuestion?.picture?.url
+                          : null,
+                  height: context.height * 0.12,
+                  width: context.height * 0.12,
+                ),
               );
             }
 
@@ -131,10 +154,15 @@ class _DragTarget extends StatelessWidget {
 }
 
 class _QuizType1Header extends StatelessWidget {
-  const _QuizType1Header({required this.quiz, required this.currentQuestion});
+  const _QuizType1Header({
+    required this.quiz,
+    required this.currentQuestion,
+    this.isQuestionVisible = true,
+  });
 
   final QuizDto? quiz;
   final QuizQuestionDto? currentQuestion;
+  final bool isQuestionVisible;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +188,10 @@ class _QuizType1Header extends StatelessWidget {
           Expanded(
             child: Observer(
               builder: (_) {
+                if (!isQuestionVisible) {
+                  return Space.empty;
+                }
+
                 return Draggable<QuizQuestionDto>(
                   data: currentQuestion,
                   childWhenDragging: ConstrainedBox(
