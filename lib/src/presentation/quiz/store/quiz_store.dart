@@ -3,8 +3,6 @@ import 'package:collection/collection.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
 
-import '../../../common/router/app_router.dart';
-import '../../../common/router/app_router.gr.dart';
 import '../../../data/parse_sdk/dto/quiz_answer_dto.dart';
 import '../../../data/parse_sdk/dto/quiz_dto.dart';
 import '../../../data/parse_sdk/dto/quiz_question_dto.dart';
@@ -52,59 +50,49 @@ abstract class _QuizStoreBase with Store {
   @observable
   QuizQuestionDto? currentQuestion;
 
+  @observable
+  QuizQuestionDto? targetingQuestion;
+
+  @computed
+  bool get isCorrectTarget =>
+      currentQuestion?.correctAnswer?.compareId(targetingQuestion) ?? false;
+
   @action
   setCurrentQuestion(QuizQuestionDto? value) => currentQuestion = value;
 
   @action
-  nextQuestion() {
-    if (currentQuestion == null) return;
+  setTargetingQuestion(QuizQuestionDto? value) => targetingQuestion = value;
 
-    final questions = currentQuiz?.questions ?? [];
-    final currentIndex = questions.indexOf(currentQuestion!);
+  @observable
+  ObservableMap<QuizQuestionDto, QuizAnswerDto> answeredQuestions =
+      ObservableMap.of({});
 
-    if (currentIndex == -1) {
+  @action
+  confirmAnswer() async {
+    if (targetingQuestion == null ||
+        currentQuestion == null ||
+        targetingQuestion?.correctAnswer == null) {
       return;
     }
 
-    if (currentIndex >= questions.length - 1) {
-      sl<AppRouter>().replace(QuizResultRoute());
-      return;
-    }
+    answeredQuestions[currentQuestion!] = targetingQuestion!.correctAnswer!;
 
-    currentQuestion = questions[currentIndex + 1];
-  }
+    targetingQuestion = null;
+    final currentQuestionIndex = currentQuiz?.questions.indexWhere(
+      (e) => e.compareId(currentQuestion),
+    );
 
-  @observable
-  ObservableMap<QuizAnswerDto, QuizQuestionDto> answeredMap = ObservableMap.of(
-    {},
-  );
-
-  @observable
-  QuizAnswerDto? selectedAnswer;
-
-  @action
-  void setSelectedAnswer(QuizAnswerDto? value) => selectedAnswer = value;
-
-  @observable
-  List<QuizQuestionDto> correctAnswers = <QuizQuestionDto>[];
-
-  @observable
-  List<QuizQuestionDto> incorrectAnswers = <QuizQuestionDto>[];
-
-  @action
-  setAnswer(QuizAnswerDto? answer) {
-    if (answer == null || currentQuestion == null) return;
-
-    if (currentQuestion?.correctAnswer?.compareId(answer) ?? false) {
-      correctAnswers.add(currentQuestion!);
+    if (currentQuestionIndex == -1 || currentQuestionIndex == null) {
+      // TODO Handle quiz end
     } else {
-      incorrectAnswers.add(currentQuestion!);
+      currentQuestion = currentQuiz?.questions.elementAtOrNull(
+        currentQuestionIndex + 1,
+      );
     }
   }
 
   dispose() {
-    correctAnswers.clear();
-    incorrectAnswers.clear();
+    targetingQuestion = null;
     currentQuestion = null;
     currentQuiz = null;
   }

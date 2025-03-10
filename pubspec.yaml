@@ -41,6 +41,7 @@ dependencies:
 
   # UI components
   cupertino_icons: ^1.0.8
+  dotted_border: ^2.1.0
   
   # Internal Packages
   aks_internal:
