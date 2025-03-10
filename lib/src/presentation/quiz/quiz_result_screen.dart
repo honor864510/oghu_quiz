@@ -1,7 +1,8 @@
+import 'package:aks_internal/aks_internal.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:quiz/src/common/router/app_router.gr.dart';
 
+import '../../common/router/app_router.gr.dart';
 import '../../service_locator/sl.dart';
 import 'store/quiz_store.dart';
 
@@ -28,15 +29,19 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            // Text(
-            //   '${sl<QuizStore>().correctAnswers.length} correct answers',
-            //   style: context.textTheme.displayLarge?.copyWith(color: context.colorScheme.primary),
-            // ),
+            Text(
+              '${sl<QuizStore>().correctCount} correct answers',
+              style: context.textTheme.displayLarge?.copyWith(
+                color: context.colorScheme.primary,
+              ),
+            ),
 
-            // Text(
-            //   '${sl<QuizStore>().incorrectAnswers.length} incorrect answers answers',
-            //   style: context.textTheme.displayLarge?.copyWith(color: context.colorScheme.primary),
-            // ),
+            Text(
+              '${sl<QuizStore>().incorrectCount} incorrect answers answers',
+              style: context.textTheme.displayLarge?.copyWith(
+                color: context.colorScheme.primary,
+              ),
+            ),
             ElevatedButton(
               onPressed: () => context.router.replaceAll([HomeRoute()]),
               child: const Text('Back to Categories'),

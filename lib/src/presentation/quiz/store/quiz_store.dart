@@ -2,6 +2,8 @@ import 'package:aks_internal/aks_internal.dart';
 import 'package:collection/collection.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mobx/mobx.dart';
+import 'package:quiz/src/common/router/app_router.dart';
+import 'package:quiz/src/common/router/app_router.gr.dart';
 
 import '../../../data/parse_sdk/dto/quiz_answer_dto.dart';
 import '../../../data/parse_sdk/dto/quiz_dto.dart';
@@ -67,6 +69,17 @@ abstract class _QuizStoreBase with Store {
   ObservableMap<QuizQuestionDto, QuizAnswerDto> answeredQuestions =
       ObservableMap.of({});
 
+  @computed
+  int get correctCount =>
+      answeredQuestions.entries
+          .where(
+            (entry) => entry.key.correctAnswer?.compareId(entry.value) ?? false,
+          )
+          .length;
+
+  @computed
+  int get incorrectCount => answeredQuestions.length - correctCount;
+
   @action
   confirmAnswer() async {
     if (targetingQuestion == null ||
@@ -82,8 +95,11 @@ abstract class _QuizStoreBase with Store {
       (e) => e.compareId(currentQuestion),
     );
 
-    if (currentQuestionIndex == -1 || currentQuestionIndex == null) {
+    if (currentQuestionIndex == -1 ||
+        currentQuestionIndex == null ||
+        currentQuestionIndex == currentQuiz!.questions.length - 1) {
       // TODO Handle quiz end
+      sl<AppRouter>().replace(QuizResultRoute());
     } else {
       currentQuestion = currentQuiz?.questions.elementAtOrNull(
         currentQuestionIndex + 1,
@@ -92,6 +108,7 @@ abstract class _QuizStoreBase with Store {
   }
 
   dispose() {
+    answeredQuestions = ObservableMap.of({});
     targetingQuestion = null;
     currentQuestion = null;
     currentQuiz = null;
