@@ -74,6 +74,7 @@ class _AnswerGroups extends StatelessWidget {
           _AnswersBox(
             title: Text(
               answer.title,
+              textAlign: TextAlign.center,
               style: context.textTheme.titleLarge?.copyWith(
                 color: context.colorScheme.onPrimary,
                 fontWeight: FontWeight.bold,

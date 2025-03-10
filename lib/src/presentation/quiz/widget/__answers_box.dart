@@ -26,19 +26,23 @@ class _AnswersBox extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           spacing: AksInternal.constants.padding,
           children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: context.colorScheme.primary,
-                borderRadius: BorderRadius.circular(
-                  AksInternal.constants.borderRadius,
+            Align(
+              alignment: Alignment.center,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.colorScheme.primary,
+                  borderRadius: BorderRadius.circular(
+                    AksInternal.constants.borderRadius,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AksInternal.constants.padding * 2,
-                  vertical: AksInternal.constants.padding,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: context.height * 0.1,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: context.height * 0.03),
+                    child: title,
+                  ),
                 ),
-                child: title,
               ),
             ),
             child,
