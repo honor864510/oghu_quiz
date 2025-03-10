@@ -127,6 +127,7 @@ class _DragTarget extends StatelessWidget {
 
             if (isAnswered || isTargeting) {
               return Draggable<QuizQuestionDto>(
+                maxSimultaneousDrags: isAnswered ? 0 : 1,
                 data: isTargeting ? sl<QuizStore>().currentQuestion : null,
                 feedback: _QuestionTitleHeader(
                   currentQuestion: sl<QuizStore>().currentQuestion,
