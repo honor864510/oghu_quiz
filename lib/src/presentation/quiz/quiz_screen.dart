@@ -4,13 +4,17 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
+import '../../../generated/assets/assets.gen.dart';
+import '../../../generated/strings.g.dart';
 import '../../data/parse_sdk/dto/quiz_answer_dto.dart';
 import '../../data/parse_sdk/dto/quiz_dto.dart';
 import '../../data/parse_sdk/dto/quiz_question_dto.dart';
 import '../../service_locator/sl.dart';
+import '../settings/store/settings_store.dart';
 import 'store/quiz_store.dart';
 
 part 'widget/__answers_box.dart';
+part 'widget/__drop_here_widget.dart';
 part 'widget/__image_placeholder.dart';
 part 'widget/__quiz_type1.dart';
 

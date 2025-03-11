@@ -22,33 +22,28 @@ class _QuizType1 extends StatelessWidget {
                 );
               },
             ),
-            // TODO Confirm button if it's placed
-            // TOOD Show Space.empty if it's not placed yet
-            Observer(
-              builder: (_) {
-                final isTargeted = sl<QuizStore>().targetingQuestion != null;
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: context.height * 0.12),
+              child: Observer(
+                builder: (_) {
+                  final isTargeted = sl<QuizStore>().targetingQuestion != null;
 
-                if (isTargeted) {
-                  return FilledButton(
-                    onPressed: () => sl<QuizStore>().confirmAnswer(),
-                    style: FilledButton.styleFrom(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AksInternal.constants.padding * 3,
-                        vertical: AksInternal.constants.padding * 1.4,
+                  if (isTargeted) {
+                    return FilledButton(
+                      onPressed: () => sl<QuizStore>().confirmAnswer(),
+                      style: FilledButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AksInternal.constants.padding * 3,
+                          vertical: AksInternal.constants.padding * 1.4,
+                        ),
                       ),
-                    ),
-                    child: Text('Confirm'),
-                  );
-                }
+                      child: Text(context.t.confirm),
+                    );
+                  }
 
-                return Text(
-                  'Drop text here',
-                  style: context.textTheme.displayMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: context.colorScheme.primary,
-                  ),
-                );
-              },
+                  return _DropHereWidget();
+                },
+              ),
             ),
             _AnswerGroups(quiz: quiz),
           ],

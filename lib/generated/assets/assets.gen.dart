@@ -19,11 +19,28 @@ class $AssetsIconsGen {
   List<AssetGenImage> get values => [oghuLogo];
 }
 
+class $AssetsImagesGen {
+  const $AssetsImagesGen();
+
+  /// File path: assets/images/drop_here_en.png
+  AssetGenImage get dropHereEn => const AssetGenImage('assets/images/drop_here_en.png');
+
+  /// File path: assets/images/drop_here_ru.png
+  AssetGenImage get dropHereRu => const AssetGenImage('assets/images/drop_here_ru.png');
+
+  /// File path: assets/images/drop_here_tk.png
+  AssetGenImage get dropHereTk => const AssetGenImage('assets/images/drop_here_tk.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [dropHereEn, dropHereRu, dropHereTk];
+}
+
 class Assets {
   const Assets._();
 
   static const String aEnv = '.env';
   static const $AssetsIconsGen icons = $AssetsIconsGen();
+  static const $AssetsImagesGen images = $AssetsImagesGen();
 
   /// List of all assets
   static List<String> get values => [aEnv];

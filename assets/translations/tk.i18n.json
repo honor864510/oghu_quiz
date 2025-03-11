@@ -5,7 +5,8 @@
     "no": "Ýok",
     "all": "Ählisi",
     "start": "Başlat",
+    "confirm": "Tassykla",
     "interactivePractice": "Interaktiw Tejribe",
-    "correctAnswer": "Jogap dogry!",
-    "incorrectAnswer": "Jogap dogry däl! Täzeden synanşyň."
+    "correct": "Dogry!",
+    "incorrect": "Jogap dogry däl."
 }
