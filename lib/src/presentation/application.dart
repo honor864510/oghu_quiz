@@ -35,7 +35,9 @@ class Application extends StatelessWidget {
           darkTheme: AppTheme.darkTheme,
 
           // App router
-          routerConfig: sl<AppRouter>().config(navigatorObservers: () => [AksRouteObserver()]),
+          routerConfig: sl<AppRouter>().config(
+            navigatorObservers: () => [AksRouteObserver()],
+          ),
 
           // Remove debug mode banner
           debugShowCheckedModeBanner: false,
@@ -47,21 +49,36 @@ class Application extends StatelessWidget {
             return AnnotatedRegion(
               value: SystemUiOverlayStyle(
                 // For Android.
-                statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
+                statusBarIconBrightness:
+                    isDarkMode ? Brightness.light : Brightness.dark,
                 // For iOS.
-                statusBarBrightness: isDarkMode ? Brightness.dark : Brightness.light,
+                statusBarBrightness:
+                    isDarkMode ? Brightness.dark : Brightness.light,
               ),
               child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(textScaler: const TextScaler.linear(1.0)),
-                child: FractionallySizedBox(
-                  widthFactor: context.width < 1000 ? 1.0 : 1000 / context.width,
-                  child: child ?? Space.empty,
-                ),
+                data: MediaQuery.of(
+                  context,
+                ).copyWith(textScaler: const TextScaler.linear(1.0)),
+                child: child ?? Space.empty,
               ),
             );
           },
         );
       },
+    );
+  }
+}
+
+class FixedWidthWindow extends StatelessWidget {
+  const FixedWidthWindow({super.key, this.child});
+
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionallySizedBox(
+      widthFactor: context.width < 1000 ? 1.0 : 1000 / context.width,
+      child: child ?? Space.empty,
     );
   }
 }

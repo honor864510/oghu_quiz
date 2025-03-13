@@ -10,6 +10,7 @@ import '../../data/parse_sdk/dto/quiz_answer_dto.dart';
 import '../../data/parse_sdk/dto/quiz_dto.dart';
 import '../../data/parse_sdk/dto/quiz_question_dto.dart';
 import '../../service_locator/sl.dart';
+import '../application.dart';
 import '../settings/store/settings_store.dart';
 import 'store/quiz_store.dart';
 
@@ -38,9 +39,11 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ListView(
-        children: [if (widget.quiz.type == QuizType.yesNo) _QuizType1()],
+    return FixedWidthWindow(
+      child: Scaffold(
+        body: ListView(
+          children: [if (widget.quiz.type == QuizType.yesNo) _QuizType1()],
+        ),
       ),
     );
   }

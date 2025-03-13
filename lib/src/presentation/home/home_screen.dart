@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 
 import '../../../generated/strings.g.dart';
+import '../application.dart';
 import '../quiz_category/horizontal_category_list.dart';
 import '../quiz/quiz_list_wrap.dart';
 
@@ -12,21 +13,28 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(context.height * 0.1 + kToolbarHeight),
-        child: Column(
-          children: [
-            Space.v10,
-            Text(
-              context.t.interactivePractice,
-              style: context.textTheme.displayMedium?.copyWith(color: context.colorScheme.primary),
-            ),
-            Expanded(child: HorizontalCategoryList()),
-          ],
+    return FixedWidthWindow(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(context.height * 0.1 + kToolbarHeight),
+          child: Column(
+            children: [
+              Space.v10,
+              Text(
+                context.t.interactivePractice,
+                style: context.textTheme.displayMedium?.copyWith(
+                  color: context.colorScheme.primary,
+                ),
+              ),
+              Expanded(child: HorizontalCategoryList()),
+            ],
+          ),
+        ),
+        body: ListView(
+          padding: EdgeInsets.all(AksInternal.constants.padding),
+          children: [QuizListWrap()],
         ),
       ),
-      body: ListView(padding: EdgeInsets.all(AksInternal.constants.padding), children: [QuizListWrap()]),
     );
   }
 }

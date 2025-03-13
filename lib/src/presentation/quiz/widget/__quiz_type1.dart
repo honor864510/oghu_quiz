@@ -1,6 +1,42 @@
 part of '../quiz_screen.dart';
 
 class _QuizType1 extends StatelessWidget {
+  _confirmAnswer(BuildContext context) async {
+    final store = sl<QuizStore>();
+    final isCorrect =
+        store.currentQuestion?.correctAnswer?.objectId ==
+        store.targetingQuestion?.correctAnswer?.objectId;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => Dialog(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: AksInternal.constants.padding,
+              children: [
+                Space.empty,
+                Text(isCorrect ? context.t.correct : context.t.incorrect),
+                Text(
+                  isCorrect
+                      ? store.currentQuestion?.correctDescription ?? ''
+                      : store.currentQuestion?.wrongDescription ?? '',
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await Navigator.of(context).maybePop();
+                    sl<QuizStore>().confirmAnswer();
+                  },
+                  child: Text(context.t.next),
+                ),
+                Space.empty,
+              ],
+            ),
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(
@@ -22,22 +58,24 @@ class _QuizType1 extends StatelessWidget {
                 );
               },
             ),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: context.height * 0.12),
+            SizedBox(
+              height: context.height * 0.1,
               child: Observer(
                 builder: (_) {
                   final isTargeted = sl<QuizStore>().targetingQuestion != null;
 
                   if (isTargeted) {
-                    return FilledButton(
-                      onPressed: () => sl<QuizStore>().confirmAnswer(),
-                      style: FilledButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: AksInternal.constants.padding * 3,
-                          vertical: AksInternal.constants.padding * 1.4,
+                    return Align(
+                      child: FilledButton(
+                        onPressed: () => _confirmAnswer(context),
+                        style: FilledButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AksInternal.constants.padding * 3,
+                            vertical: AksInternal.constants.padding * 1.4,
+                          ),
                         ),
+                        child: Text(context.t.confirm),
                       ),
-                      child: Text(context.t.confirm),
                     );
                   }
 

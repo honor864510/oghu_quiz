@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../common/router/app_router.gr.dart';
 import '../../service_locator/sl.dart';
+import '../application.dart';
 import 'store/quiz_store.dart';
 
 @RoutePage()
@@ -24,29 +25,31 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              '${sl<QuizStore>().correctCount} correct answers',
-              style: context.textTheme.displayLarge?.copyWith(
-                color: context.colorScheme.primary,
+    return FixedWidthWindow(
+      child: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                '${sl<QuizStore>().correctCount} correct answers',
+                style: context.textTheme.displayLarge?.copyWith(
+                  color: context.colorScheme.primary,
+                ),
               ),
-            ),
 
-            Text(
-              '${sl<QuizStore>().incorrectCount} incorrect answers answers',
-              style: context.textTheme.displayLarge?.copyWith(
-                color: context.colorScheme.primary,
+              Text(
+                '${sl<QuizStore>().incorrectCount} incorrect answers answers',
+                style: context.textTheme.displayLarge?.copyWith(
+                  color: context.colorScheme.primary,
+                ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: () => context.router.replaceAll([HomeRoute()]),
-              child: const Text('Back to Categories'),
-            ),
-          ],
+              ElevatedButton(
+                onPressed: () => context.router.replaceAll([HomeRoute()]),
+                child: const Text('Back to Categories'),
+              ),
+            ],
+          ),
         ),
       ),
     );
