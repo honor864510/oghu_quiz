@@ -12,11 +12,20 @@ import 'package:flutter/widgets.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/flag_en.png
+  AssetGenImage get flagEn => const AssetGenImage('assets/icons/flag_en.png');
+
+  /// File path: assets/icons/flag_ru.png
+  AssetGenImage get flagRu => const AssetGenImage('assets/icons/flag_ru.png');
+
+  /// File path: assets/icons/flag_tk.png
+  AssetGenImage get flagTk => const AssetGenImage('assets/icons/flag_tk.png');
+
   /// File path: assets/icons/oghu_logo.png
   AssetGenImage get oghuLogo => const AssetGenImage('assets/icons/oghu_logo.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [oghuLogo];
+  List<AssetGenImage> get values => [flagEn, flagRu, flagTk, oghuLogo];
 }
 
 class $AssetsImagesGen {
