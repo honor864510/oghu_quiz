@@ -26,9 +26,15 @@ class QuizListWrap extends StatelessWidget {
                   sl<QuizStore>().quizFetcherStore.items
                       .map<Widget>(
                         (item) => InkWell(
-                          onTap: () => context.pushRoute(QuizInfoRoute(quiz: item)),
+                          onTap:
+                              () =>
+                                  context.pushRoute(QuizInfoRoute(quiz: item)),
                           child: SizedBox(
-                            width: context.width * 0.22,
+                            width:
+                                context.width < 1000
+                                    ? context.width * 0.2
+                                    : (context.width - 1000 / context.width) *
+                                        0.2,
                             child: Column(
                               spacing: AksInternal.constants.padding,
                               mainAxisSize: MainAxisSize.min,
@@ -36,7 +42,8 @@ class QuizListWrap extends StatelessWidget {
                                 AksCachedImage(imageUrl: item.picture?.url),
                                 Text(
                                   item.title,
-                                  style: context.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                                  style: context.textTheme.titleMedium
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                               ],
                             ),

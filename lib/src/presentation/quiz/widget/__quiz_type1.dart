@@ -282,29 +282,36 @@ class _QuestionTitleHeader extends StatelessWidget {
           Expanded(
             child: Observer(
               builder: (_) {
+                // TODO Fix height
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Space.v15,
-                    Text(
-                      currentQuestion?.title ?? '',
-                      style: context.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.primary,
+                    Expanded(
+                      child: Text(
+                        currentQuestion?.title ?? '',
+                        style: context.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: context.colorScheme.primary,
+                        ),
                       ),
                     ),
-                    Text(
-                      currentQuestion?.description ?? '',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        currentQuestion?.description ?? '',
+                        style: context.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    Text(
-                      currentQuestion?.text ?? '',
-                      style: context.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: context.colorScheme.primary,
+                    Expanded(
+                      child: Text(
+                        currentQuestion?.text ?? '',
+                        style: context.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: context.colorScheme.primary,
+                        ),
                       ),
                     ),
                   ],
