@@ -308,7 +308,7 @@ class _QuestionTitleHeader extends StatelessWidget {
                     if (currentQuestion?.title.trim().isNotEmpty ?? true)
                       AutoSizeText(
                         currentQuestion?.title ?? '',
-                        maxLines: 4,
+                        maxLines: 5,
                         minFontSize: 8,
                         style: context.textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -318,7 +318,7 @@ class _QuestionTitleHeader extends StatelessWidget {
                     if (currentQuestion?.description.trim().isNotEmpty ?? true)
                       AutoSizeText(
                         currentQuestion?.description ?? '',
-                        maxLines: 4,
+                        maxLines: 5,
                         minFontSize: 8,
                         style: context.textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -327,7 +327,7 @@ class _QuestionTitleHeader extends StatelessWidget {
                     if (currentQuestion?.text.trim().isNotEmpty ?? true)
                       AutoSizeText(
                         currentQuestion?.text ?? '',
-                        maxLines: 4,
+                        maxLines: 5,
                         minFontSize: 8,
                         style: context.textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,

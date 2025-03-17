@@ -38,7 +38,6 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
                   color: context.colorScheme.primary,
                 ),
               ),
-
               AutoSizeText(
                 '${sl<QuizStore>().incorrectCount} incorrect answers answers',
                 style: context.textTheme.displayLarge?.copyWith(
