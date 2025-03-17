@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aks_internal/aks_internal.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -19,7 +17,7 @@ void main() => runZonedGuarded(() async {
   HttpOverrides.global = MyHttpOverrides();
 
   // debugPaintSizeEnabled = kDebugMode;
-  debugRepaintRainbowEnabled = kDebugMode;
+  // debugRepaintRainbowEnabled = kDebugMode;
 
   await configureDependencies();
 
