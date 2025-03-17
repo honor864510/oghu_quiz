@@ -9,12 +9,7 @@ class _AnswersBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth:
-            context.width < 1000
-                ? 1.0 * context.width * 0.44
-                : (1000 / context.width) * context.width * 0.44,
-      ),
+      constraints: BoxConstraints(maxWidth: context.width * 0.3),
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(
@@ -35,12 +30,16 @@ class _AnswersBox extends StatelessWidget {
                     AksInternal.constants.borderRadius,
                   ),
                 ),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: context.height * 0.1,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: context.height * 0.03),
-                    child: title,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: context.height * 0.12),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: context.height * 0.03,
+                      ),
+                      child: title,
+                    ),
                   ),
                 ),
               ),

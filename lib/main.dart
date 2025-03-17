@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:aks_internal/aks_internal.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -16,6 +18,9 @@ void main() => runZonedGuarded(() async {
   await dotenv.load();
   HttpOverrides.global = MyHttpOverrides();
 
+  // debugPaintSizeEnabled = kDebugMode;
+  debugRepaintRainbowEnabled = kDebugMode;
+
   await configureDependencies();
 
   runApp(TranslationProvider(child: Application()));
@@ -25,6 +30,7 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }

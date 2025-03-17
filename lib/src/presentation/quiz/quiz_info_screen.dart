@@ -1,5 +1,6 @@
 import 'package:aks_internal/aks_internal.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../../generated/strings.g.dart';
@@ -18,7 +19,7 @@ class QuizInfoScreen extends StatelessWidget {
     return FixedWidthWindow(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(
+          title: AutoSizeText(
             context.t.interactivePractice,
             style: context.textTheme.displayMedium?.copyWith(
               color: context.colorScheme.primary,
@@ -36,7 +37,7 @@ class QuizInfoScreen extends StatelessWidget {
                 imageUrl: quiz.picture?.url,
                 height: context.height * 0.6,
               ),
-              Text(
+              AutoSizeText(
                 quiz.title,
                 style: context.textTheme.displayMedium?.copyWith(
                   color: context.colorScheme.primary,
@@ -50,7 +51,7 @@ class QuizInfoScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () => context.pushRoute(QuizRoute(quiz: quiz)),
-                child: Text(
+                child: AutoSizeText(
                   context.t.start,
                   style: context.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,

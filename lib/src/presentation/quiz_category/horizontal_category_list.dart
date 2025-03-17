@@ -1,4 +1,5 @@
 import 'package:aks_internal/aks_internal.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -15,13 +16,16 @@ class HorizontalCategoryList extends StatelessWidget {
 
     return Observer(
       builder: (_) {
-        return Center(
-          child: ListView.separated(
-            itemCount: categoryFetcherStore.items.length + 1,
-            separatorBuilder: (context, index) => Space.h10,
-            scrollDirection: Axis.horizontal,
-            shrinkWrap: true,
-            itemBuilder: (context, index) => _CategoryItem(index),
+        return SizedBox(
+          height: 80,
+          child: Center(
+            child: ListView.separated(
+              itemCount: categoryFetcherStore.items.length + 1,
+              separatorBuilder: (context, index) => Space.h10,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemBuilder: (context, index) => _CategoryItem(index),
+            ),
           ),
         );
       },
@@ -45,11 +49,17 @@ class _CategoryItem extends StatelessWidget {
 
           return Align(
             child: TextButton(
-              onPressed: () => sl<QuizCategoryStore>().setSelectedCategory(null),
-              style: TextButton.styleFrom(backgroundColor: isSelected ? context.colorScheme.primary : null),
-              child: Text(
+              onPressed:
+                  () => sl<QuizCategoryStore>().setSelectedCategory(null),
+              style: TextButton.styleFrom(
+                backgroundColor:
+                    isSelected ? context.colorScheme.primary : null,
+              ),
+              child: AutoSizeText(
                 context.t.all,
-                style: context.textTheme.titleLarge?.copyWith(color: isSelected ? context.colorScheme.onPrimary : null),
+                style: context.textTheme.titleLarge?.copyWith(
+                  color: isSelected ? context.colorScheme.onPrimary : null,
+                ),
               ),
             ),
           );
@@ -60,11 +70,16 @@ class _CategoryItem extends StatelessWidget {
 
         return Align(
           child: TextButton(
-            onPressed: () => sl<QuizCategoryStore>().setSelectedCategory(category),
-            style: TextButton.styleFrom(backgroundColor: isSelected ? context.colorScheme.primary : null),
-            child: Text(
+            onPressed:
+                () => sl<QuizCategoryStore>().setSelectedCategory(category),
+            style: TextButton.styleFrom(
+              backgroundColor: isSelected ? context.colorScheme.primary : null,
+            ),
+            child: AutoSizeText(
               category.title,
-              style: context.textTheme.titleLarge?.copyWith(color: isSelected ? context.colorScheme.onPrimary : null),
+              style: context.textTheme.titleLarge?.copyWith(
+                color: isSelected ? context.colorScheme.onPrimary : null,
+              ),
             ),
           ),
         );

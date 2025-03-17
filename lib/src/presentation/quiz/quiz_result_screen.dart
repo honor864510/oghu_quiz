@@ -1,5 +1,6 @@
 import 'package:aks_internal/aks_internal.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/router/app_router.gr.dart';
@@ -31,14 +32,14 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(
+              AutoSizeText(
                 '${sl<QuizStore>().correctCount} correct answers',
                 style: context.textTheme.displayLarge?.copyWith(
                   color: context.colorScheme.primary,
                 ),
               ),
 
-              Text(
+              AutoSizeText(
                 '${sl<QuizStore>().incorrectCount} incorrect answers answers',
                 style: context.textTheme.displayLarge?.copyWith(
                   color: context.colorScheme.primary,
@@ -46,7 +47,7 @@ class _QuizResultScreenState extends State<QuizResultScreen> {
               ),
               ElevatedButton(
                 onPressed: () => context.router.replaceAll([HomeRoute()]),
-                child: const Text('Back to Categories'),
+                child: const AutoSizeText('Back to Categories'),
               ),
             ],
           ),

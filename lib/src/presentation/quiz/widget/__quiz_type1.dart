@@ -17,8 +17,10 @@ class _QuizType1 extends StatelessWidget {
               spacing: AksInternal.constants.padding,
               children: [
                 Space.empty,
-                Text(isCorrect ? context.t.correct : context.t.incorrect),
-                Text(
+                AutoSizeText(
+                  isCorrect ? context.t.correct : context.t.incorrect,
+                ),
+                AutoSizeText(
                   isCorrect
                       ? store.currentQuestion?.correctDescription ?? ''
                       : store.currentQuestion?.wrongDescription ?? '',
@@ -28,7 +30,7 @@ class _QuizType1 extends StatelessWidget {
                     await Navigator.of(context).maybePop();
                     sl<QuizStore>().confirmAnswer();
                   },
-                  child: Text(context.t.next),
+                  child: AutoSizeText(context.t.next),
                 ),
                 Space.empty,
               ],
@@ -74,7 +76,7 @@ class _QuizType1 extends StatelessWidget {
                             vertical: AksInternal.constants.padding * 1.4,
                           ),
                         ),
-                        child: Text(context.t.confirm),
+                        child: AutoSizeText(context.t.confirm),
                       ),
                     );
                   }
@@ -105,8 +107,9 @@ class _AnswerGroups extends StatelessWidget {
       children: [
         for (final answer in quiz?.answers ?? <QuizAnswerDto>[])
           _AnswersBox(
-            title: Text(
+            title: AutoSizeText(
               answer.title,
+              maxLines: 3,
               textAlign: TextAlign.center,
               style: context.textTheme.titleLarge?.copyWith(
                 color: context.colorScheme.onPrimary,
@@ -122,6 +125,7 @@ class _AnswerGroups extends StatelessWidget {
                     [];
 
                 return Wrap(
+                  alignment: WrapAlignment.center,
                   spacing: AksInternal.constants.padding,
                   runSpacing: AksInternal.constants.padding,
                   children: [
@@ -164,6 +168,7 @@ class _DragTarget extends StatelessWidget {
                 maxSimultaneousDrags: isAnswered ? 0 : 1,
                 data: isTargeting ? sl<QuizStore>().currentQuestion : null,
                 feedback: _QuestionTitleHeader(
+                  isFeedback: true,
                   currentQuestion: sl<QuizStore>().currentQuestion,
                 ),
                 childWhenDragging: _ImagePlaceholder(),
@@ -201,26 +206,35 @@ class _QuizType1Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: context.height * 0.2,
+    debugPrint(context.width.toString());
+    return Container(
+      constraints: BoxConstraints(
+        minHeight: context.height * 0.16 + AksInternal.constants.padding,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal:
+            (context.width > 1000
+                ? (context.width - 1000) / 1.8
+                : AksInternal.constants.padding),
+      ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           SizedBox(
             width:
-                (context.width * 0.5 -
-                    context.height * 0.12 / 2 -
-                    AksInternal.constants.padding * 2) *
-                (context.width < 1000 ? 1.0 : 1000 / context.width),
-            child: Text(
+                context.width * 0.5 -
+                context.height * 0.16 / 2 -
+                (context.width > 1000
+                    ? (context.width - 1000) / 1.8
+                    : AksInternal.constants.padding),
+            child: AutoSizeText(
               quiz?.category?.title ?? '',
-              style: context.textTheme.displayMedium?.copyWith(
+              style: context.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: context.colorScheme.primary,
               ),
             ),
           ),
-          Expanded(
+          Flexible(
             child: Observer(
               builder: (_) {
                 if (!isQuestionVisible) {
@@ -229,24 +243,21 @@ class _QuizType1Header extends StatelessWidget {
 
                 return Draggable<QuizQuestionDto>(
                   data: currentQuestion,
-                  childWhenDragging: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth:
-                          (context.width * 0.5) *
-                          (context.width < 1000 ? 1.0 : 1000 / context.width),
-                    ),
-                    child: Row(
-                      children: [
-                        _ImagePlaceholder(radius: context.height * 0.16),
-                        Space.h20,
-                        Expanded(child: Space.empty),
-                      ],
-                    ),
+                  childWhenDragging: Row(
+                    children: [
+                      _ImagePlaceholder(radius: context.height * 0.16),
+                      Space.h20,
+                      Expanded(child: Space.empty),
+                    ],
                   ),
                   feedback: _QuestionTitleHeader(
+                    isFeedback: true,
                     currentQuestion: currentQuestion,
                   ),
-                  child: _QuestionTitleHeader(currentQuestion: currentQuestion),
+                  child: _QuestionTitleHeader(
+                    currentQuestion: currentQuestion,
+                    isFeedback: false,
+                  ),
                 );
               },
             ),
@@ -258,27 +269,34 @@ class _QuizType1Header extends StatelessWidget {
 }
 
 class _QuestionTitleHeader extends StatelessWidget {
-  const _QuestionTitleHeader({required this.currentQuestion});
+  const _QuestionTitleHeader({
+    required this.currentQuestion,
+    required this.isFeedback,
+  });
 
   final QuizQuestionDto? currentQuestion;
+  final bool isFeedback;
 
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxWidth:
-            (context.width * 0.5) *
-            (context.width < 1000 ? 1.0 : 1000 / context.width),
-      ),
+      constraints:
+          isFeedback
+              ? BoxConstraints(maxWidth: 800, maxHeight: 120)
+              : BoxConstraints(maxHeight: 120),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          AksCachedImage(
-            imageUrl: currentQuestion?.picture?.url,
-            height: context.height * 0.16,
-            width: context.height * 0.16,
+          Align(
+            alignment: Alignment.center,
+            child: AksCachedImage(
+              imageUrl: currentQuestion?.picture?.url,
+              height: context.height * 0.16,
+              width: context.height * 0.16,
+            ),
           ),
           Space.h20,
-
           Expanded(
             child: Observer(
               builder: (_) {
@@ -287,33 +305,35 @@ class _QuestionTitleHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Space.v15,
-                    Expanded(
-                      child: Text(
+                    if (currentQuestion?.title.trim().isNotEmpty ?? true)
+                      AutoSizeText(
                         currentQuestion?.title ?? '',
-                        style: context.textTheme.titleLarge?.copyWith(
+                        maxLines: 4,
+                        minFontSize: 8,
+                        style: context.textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: context.colorScheme.primary,
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Text(
+                    if (currentQuestion?.description.trim().isNotEmpty ?? true)
+                      AutoSizeText(
                         currentQuestion?.description ?? '',
-                        style: context.textTheme.titleMedium?.copyWith(
+                        maxLines: 4,
+                        minFontSize: 8,
+                        style: context.textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Text(
+                    if (currentQuestion?.text.trim().isNotEmpty ?? true)
+                      AutoSizeText(
                         currentQuestion?.text ?? '',
-                        style: context.textTheme.titleMedium?.copyWith(
+                        maxLines: 4,
+                        minFontSize: 8,
+                        style: context.textTheme.labelLarge?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: context.colorScheme.primary,
                         ),
                       ),
-                    ),
                   ],
                 );
               },

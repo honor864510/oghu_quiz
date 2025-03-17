@@ -45,6 +45,12 @@ class Application extends StatelessWidget {
           // Ensure consistent font sizes across platforms by disabling system font scaling.
           builder: (context, child) {
             final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+            double baseScale = context.width / 375;
+            double aspectAdjustment = (context.height / context.width) * 0.1;
+            double textScaleFactor = (baseScale + aspectAdjustment).clamp(
+              0.8,
+              1.5,
+            );
 
             return AnnotatedRegion(
               value: SystemUiOverlayStyle(
@@ -58,7 +64,7 @@ class Application extends StatelessWidget {
               child: MediaQuery(
                 data: MediaQuery.of(
                   context,
-                ).copyWith(textScaler: const TextScaler.linear(1.0)),
+                ).copyWith(textScaler: TextScaler.linear(textScaleFactor)),
                 child: child ?? Space.empty,
               ),
             );
@@ -76,8 +82,8 @@ class FixedWidthWindow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: context.width < 1000 ? 1.0 : 1000 / context.width,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 1000),
       child: child ?? Space.empty,
     );
   }

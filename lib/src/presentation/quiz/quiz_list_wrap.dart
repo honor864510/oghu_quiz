@@ -1,5 +1,6 @@
 import 'package:aks_internal/aks_internal.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -20,6 +21,7 @@ class QuizListWrap extends StatelessWidget {
           child: IgnorePointer(
             ignoring: sl<QuizStore>().quizFetcherStore.isLoading,
             child: Wrap(
+              alignment: WrapAlignment.center,
               spacing: AksInternal.constants.padding,
               runSpacing: AksInternal.constants.padding,
               children:
@@ -40,8 +42,9 @@ class QuizListWrap extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 AksCachedImage(imageUrl: item.picture?.url),
-                                Text(
+                                AutoSizeText(
                                   item.title,
+                                  textAlign: TextAlign.center,
                                   style: context.textTheme.titleMedium
                                       ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
