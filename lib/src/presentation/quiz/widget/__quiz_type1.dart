@@ -206,7 +206,6 @@ class _QuizType1Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(context.width.toString());
     return Container(
       constraints: BoxConstraints(
         minHeight: context.height * 0.16 + AksInternal.constants.padding,
@@ -282,7 +281,7 @@ class _QuestionTitleHeader extends StatelessWidget {
     return ConstrainedBox(
       constraints:
           isFeedback
-              ? BoxConstraints(maxWidth: 800, maxHeight: 120)
+              ? BoxConstraints(maxWidth: context.width * 0.4, maxHeight: 200)
               : BoxConstraints(maxHeight: 120),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -306,32 +305,38 @@ class _QuestionTitleHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     if (currentQuestion?.title.trim().isNotEmpty ?? true)
-                      AutoSizeText(
-                        currentQuestion?.title ?? '',
-                        maxLines: 4,
-                        minFontSize: 8,
-                        style: context.textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.colorScheme.primary,
+                      Flexible(
+                        child: AutoSizeText(
+                          currentQuestion?.title ?? '',
+                          maxLines: isFeedback ? 4 : 6,
+                          minFontSize: 8,
+                          style: context.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.primary,
+                          ),
                         ),
                       ),
                     if (currentQuestion?.description.trim().isNotEmpty ?? true)
-                      AutoSizeText(
-                        currentQuestion?.description ?? '',
-                        maxLines: 4,
-                        minFontSize: 8,
-                        style: context.textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                      Flexible(
+                        child: AutoSizeText(
+                          currentQuestion?.description ?? '',
+                          maxLines: isFeedback ? 4 : 6,
+                          minFontSize: 8,
+                          style: context.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     if (currentQuestion?.text.trim().isNotEmpty ?? true)
-                      AutoSizeText(
-                        currentQuestion?.text ?? '',
-                        maxLines: 4,
-                        minFontSize: 8,
-                        style: context.textTheme.labelLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: context.colorScheme.primary,
+                      Flexible(
+                        child: AutoSizeText(
+                          currentQuestion?.text ?? '',
+                          maxLines: isFeedback ? 4 : 6,
+                          minFontSize: 8,
+                          style: context.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: context.colorScheme.primary,
+                          ),
                         ),
                       ),
                   ],
