@@ -37,6 +37,7 @@ class _AnswersBox extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: context.height * 0.03,
+                        horizontal: AksInternal.constants.padding,
                       ),
                       child: title,
                     ),
