@@ -12,9 +12,7 @@ class _AnswersBox extends StatelessWidget {
       constraints: BoxConstraints(maxWidth: context.width * 0.3),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            AksInternal.constants.borderRadius,
-          ),
+          borderRadius: BorderRadius.circular(AksInternal.constants.borderRadius),
           border: Border.all(color: context.colorScheme.primary),
         ),
         child: Column(
@@ -26,19 +24,14 @@ class _AnswersBox extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: context.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(
-                    AksInternal.constants.borderRadius,
-                  ),
+                  borderRadius: BorderRadius.circular(AksInternal.constants.borderRadius),
                 ),
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: context.height * 0.12),
                   child: SizedBox(
                     width: double.infinity,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: context.height * 0.03,
-                        horizontal: AksInternal.constants.padding,
-                      ),
+                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: AksInternal.constants.padding),
                       child: title,
                     ),
                   ),
